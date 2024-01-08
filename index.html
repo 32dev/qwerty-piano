@@ -264,13 +264,18 @@
                     key.className = 'key';
                     key.innerHTML = e.key;
                     sheet.appendChild(key);
-                    // setTimeout(function () {
-                    //     synth.triggerRelease(button.dataset.value);
-                    // }, 750);
+                    setTimeout(function () {
+                        if ((button.dataset.value).includes('s') == true) {
+                            synth.triggerRelease(tempMap.get(button.dataset.value));
+                        } else {
+
+                            synth.triggerRelease(button.dataset.value);
+                        }
+                    }, 750);
                 } catch (e) {
                     console.log(e);
                 }
-            } 
+            }
         } else {
             // synth = new Tone.PolySynth(
             //     {
