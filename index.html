@@ -79,6 +79,9 @@
             height: 100%;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js">
+
+    </script>
 </head>
 
 <body>
@@ -129,12 +132,28 @@
         'n',
         'm', 'M'
     ];
+    let map = new Map();
+    for (let i = 0; i < list.length; i++) {
+        map.set(list[i], i);
+    };
+    let sequence = ['c', 'cs', 'd', 'ds', 'e', 'f', 'fs', 'g', 'gs', 'a', 'as', 'b'];
+    let codeList = [];
+    for (let i = 2; i < 8; i++) {
+        for (j = 0; j < sequence.length; j++) {
+            codeList.push(sequence[j] + i);
+        }
+    }
+    console.log(codeList);
+    const synth = new Tone.PolySynth().toDestination();
+    // set the attributes across all the voices using 'set'
     function init() {
-        function createWhiteButton(ch) {
+        function createWhiteButton(idx) {
             let piano = document.getElementById('white-button-group');
             let button = document.createElement('div');
+            button.id = `button-${idx}`
             button.className = 'white button';
-            button.innerHTML = ch;
+            button.dataset.value = codeList[idx];
+            button.innerHTML = list[idx];
             piano.appendChild(button);
         };
         function createEmptyBlackButton() {
@@ -144,23 +163,49 @@
             button.innerHTML = ' ';
             piano.appendChild(button);
         }
-        function createBlackButton(ch) {
+        function createBlackButton(idx) {
             let piano = document.getElementById('black-button-group');
             let button = document.createElement('div');
+            button.id = `button-${idx}`
             button.className = 'black button';
-            button.innerHTML = ch;
+            button.dataset.value = codeList[idx];
+            button.innerHTML = list[idx];
             piano.appendChild(button);
         };
         for (let i = 0; i < 36; i++) {
-            createWhiteButton(list[idx++]);
+            createWhiteButton(idx++);
             if (i % 7 == 2 || i % 7 == 6) {
                 createEmptyBlackButton();
             } else {
-                createBlackButton(list[idx++]);
+                createBlackButton(idx++);
             }
         }
     };
     init();
+    document.body.addEventListener('keydown', function (e) {
+        if (!e.repeat) {
+            try {
+                let button = document.getElementById(`button-${map.get(e.key)}`);
+                console.log(button.dataset.value);
+                button.style = 'filter:invert(1)';
+                synth.triggerAttack(button.dataset.value, '8n');
+                setTimeout(function () {
+                    synth.triggerRelease(button.dataset.value);
+                }, 1000)
+            } catch (e) {
+                console.log(e);
+            }
+        }
+    })
+    document.body.addEventListener('keyup', function (e) {
+        try {
+            let button = document.getElementById(`button-${map.get(e.key)}`);
+            button.style = 'filter:invert(0)';
+            synth.triggerRelease(button.dataset.value);
+        } catch (e) {
+            console.log(e);
+        }
+    })
 </script>
 
 </html>
