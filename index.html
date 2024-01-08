@@ -159,7 +159,7 @@
         }
     }
     console.log(codeList);
-    const synth = new Tone.PolySynth().toDestination();
+    let synth = null;
     // set the attributes across all the voices using 'set'
     function init() {
         function createWhiteButton(idx) {
@@ -197,24 +197,30 @@
         }
     };
     init();
+
     let sheet = document.getElementById('sheet');
     document.body.addEventListener('keydown', function (e) {
-        if (!e.repeat) {
-            try {
-                let button = document.getElementById(`button-${map.get(e.key)}`);
-                console.log(button.dataset.value);
-                button.style = 'filter:invert(1)';
-                synth.triggerAttack(button.dataset.value, '8n');
-                let key = document.createElement('div');
-                key.className = 'key';
-                key.innerHTML = e.key;
-                sheet.appendChild(key);
-                setTimeout(function () {
-                    synth.triggerRelease(button.dataset.value);
-                }, 1000)
-            } catch (e) {
-                console.log(e);
+        if (synth != null) {
+            if (!e.repeat) {
+                try {
+                    let button = document.getElementById(`button-${map.get(e.key)}`);
+                    console.log(button.dataset.value);
+                    button.style = 'filter:invert(1)';
+                    synth.triggerAttack(button.dataset.value, '8n');
+                    let key = document.createElement('div');
+                    key.className = 'key';
+                    key.innerHTML = e.key;
+                    sheet.appendChild(key);
+                    setTimeout(function () {
+                        synth.triggerRelease(button.dataset.value);
+                    }, 1000)
+                } catch (e) {
+                    console.log(e);
+                }
             }
+
+        } else {
+            synth = new Tone.PolySynth().toDestination();
         }
     })
     document.body.addEventListener('keyup', function (e) {
@@ -229,7 +235,7 @@
     setInterval(function () {
         let key = document.createElement('div');
         key.className = 'key';
-        key.innerHTML = "&nbsp;"
+        key.innerHTML = '&nbsp;';
         sheet.appendChild(key);
     }, 250);
 </script>
