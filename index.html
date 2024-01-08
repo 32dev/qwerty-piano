@@ -257,7 +257,6 @@
                     if ((button.dataset.value).includes('s') == true) {
                         synth.triggerAttack(tempMap.get(button.dataset.value));
                     } else {
-
                         synth.triggerAttack(button.dataset.value);
                     }
                     let key = document.createElement('div');
@@ -271,28 +270,12 @@
 
                             synth.triggerRelease(button.dataset.value);
                         }
-                    }, 750);
+                    }, 2000);
                 } catch (e) {
                     console.log(e);
                 }
             }
         } else {
-            // synth = new Tone.PolySynth(
-            //     {
-
-            //         oscillator: {
-            //             type: 'sine4',
-            //             volume: -6,
-            //         },
-            //         envelope: {
-            //             attack: 0.01,
-            //             decay: 0.5,
-            //             sustain: 0.1,
-            //             release: 1,
-            //         }
-            //     }
-            // ).toDestination();
-
             synth = new Tone.Sampler({
                 urls: {
                     "c2": "3.mp3",
@@ -374,13 +357,15 @@
         }
     })
     document.body.addEventListener('keyup', function (e) {
-        try {
-            let button = document.getElementById(`button-${map.get(e.key)}`);
-            button.style = 'filter:invert(0)';
-            synth.triggerRelease(button.dataset.value);
-        } catch (e) {
-            console.log(e);
-        }
+        setTimeout(function () {
+            try {
+                let button = document.getElementById(`button-${map.get(e.key)}`);
+                button.style = 'filter:invert(0)';
+                synth.triggerRelease(button.dataset.value);
+            } catch (e) {
+                console.log(e);
+            }
+        }, 1000)
     })
     setInterval(function () {
         let key = document.createElement('div');
