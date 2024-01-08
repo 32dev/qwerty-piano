@@ -158,25 +158,7 @@
             codeList.push(sequence[j] + i);
         }
     }
-    console.log(codeList);
     let synth = null;
-    // set the attributes across all the voices using 'set'
-    // class MyMonophonicVoice extends Tone.Synth {
-    //     constructor(options) {
-    //         super(options);
-    //     }
-
-    //     // Implement the triggerAttack method
-    //     triggerAttack(note, time) {
-    //         this.triggerEnvelopeAttack(time, note, 1);
-    //     }
-
-    //     // Implement the triggerRelease method
-    //     triggerRelease(time) {
-    //         this.triggerEnvelopeRelease(time);
-    //     }
-    // }
-
     function init() {
         function createWhiteButton(idx) {
             let piano = document.getElementById('white-button-group');
@@ -263,14 +245,6 @@
                     key.className = 'key';
                     key.innerHTML = e.key;
                     sheet.appendChild(key);
-                    setTimeout(function () {
-                        if ((button.dataset.value).includes('s') == true) {
-                            synth.triggerRelease(tempMap.get(button.dataset.value));
-                        } else {
-
-                            synth.triggerRelease(button.dataset.value);
-                        }
-                    }, 2000);
                 } catch (e) {
                     console.log(e);
                 }
@@ -357,15 +331,19 @@
         }
     })
     document.body.addEventListener('keyup', function (e) {
-        setTimeout(function () {
-            try {
-                let button = document.getElementById(`button-${map.get(e.key)}`);
-                button.style = 'filter:invert(0)';
+
+        try {
+            let button = document.getElementById(`button-${map.get(e.key)}`);
+            button.style = 'filter:invert(0)';
+            if ((button.dataset.value).includes('s') == true) {
+                synth.triggerRelease(tempMap.get(button.dataset.value));
+            } else {
                 synth.triggerRelease(button.dataset.value);
-            } catch (e) {
-                console.log(e);
             }
-        }, 1000)
+        } catch (e) {
+            console.log(e);
+        }
+
     })
     setInterval(function () {
         let key = document.createElement('div');
