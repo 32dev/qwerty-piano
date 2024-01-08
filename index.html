@@ -161,21 +161,21 @@
     console.log(codeList);
     let synth = null;
     // set the attributes across all the voices using 'set'
-    class MyMonophonicVoice extends Tone.Synth {
-        constructor(options) {
-            super(options);
-        }
+    // class MyMonophonicVoice extends Tone.Synth {
+    //     constructor(options) {
+    //         super(options);
+    //     }
 
-        // Implement the triggerAttack method
-        triggerAttack(note, time) {
-            this.triggerEnvelopeAttack(time, note, 1);
-        }
+    //     // Implement the triggerAttack method
+    //     triggerAttack(note, time) {
+    //         this.triggerEnvelopeAttack(time, note, 1);
+    //     }
 
-        // Implement the triggerRelease method
-        triggerRelease(time) {
-            this.triggerEnvelopeRelease(time);
-        }
-    }
+    //     // Implement the triggerRelease method
+    //     triggerRelease(time) {
+    //         this.triggerEnvelopeRelease(time);
+    //     }
+    // }
 
     function init() {
         function createWhiteButton(idx) {
@@ -227,9 +227,9 @@
                     key.className = 'key';
                     key.innerHTML = e.key;
                     sheet.appendChild(key);
-                    setTimeout(function () {
-                        synth.triggerRelease(button.dataset.value);
-                    }, 750);
+                    // setTimeout(function () {
+                    //     synth.triggerRelease(button.dataset.value);
+                    // }, 750);
                 } catch (e) {
                     console.log(e);
                 }
