@@ -74,6 +74,18 @@
             border-right: 1px solid none;
         }
 
+        .key {
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+            line-height: 25px;
+            text-align: center;
+            background-color: black;
+            color: white;
+            font-size: large;
+            border: 1px solid white;
+        }
+
         #piano {
             width: 100%;
             height: 100%;
@@ -85,6 +97,9 @@
 </head>
 
 <body>
+    <div id="sheet">
+
+    </div>
     <div id="piano">
         <div id="white-button-group">
         </div>
@@ -182,6 +197,7 @@
         }
     };
     init();
+    let sheet = document.getElementById('sheet');
     document.body.addEventListener('keydown', function (e) {
         if (!e.repeat) {
             try {
@@ -189,6 +205,10 @@
                 console.log(button.dataset.value);
                 button.style = 'filter:invert(1)';
                 synth.triggerAttack(button.dataset.value, '8n');
+                let key = document.createElement('div');
+                key.className = 'key';
+                key.innerHTML = e.key;
+                sheet.appendChild(key);
                 setTimeout(function () {
                     synth.triggerRelease(button.dataset.value);
                 }, 1000)
@@ -206,6 +226,12 @@
             console.log(e);
         }
     })
+    setInterval(function () {
+        let key = document.createElement('div');
+        key.className = 'key';
+        key.innerHTML = "&nbsp;"
+        sheet.appendChild(key);
+    }, 250);
 </script>
 
 </html>
