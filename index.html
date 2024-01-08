@@ -251,7 +251,8 @@
             //         }
             //     }
             // ).toDestination();
-            let piano = new Tone.Sampler({
+
+            synth = new Tone.Sampler({
                 urls: {
                     "c2": "3.mp3",
                     "c#2": "4.mp3",
@@ -327,10 +328,8 @@
                     "b7": "74.mp3",
                 },
                 release: 1,
-                baseUrl: 'https://32dev.github.io/qwerty-piano/piano-sound/'
+                baseUrl: "https://32dev.github.io/qwerty-piano/piano-sound/"
             }).toDestination();
-
-            synth = new Tone.MonoSynth(Tone.Sampler).connect(piano);
         }
     })
     document.body.addEventListener('keyup', function (e) {
