@@ -213,7 +213,37 @@
         }
     };
     init();
-
+    let tempMap = new Map();
+    tempMap.set('cs2', 'c#2');
+    tempMap.set('ds2', 'd#2');
+    tempMap.set('fs2', 'f#2');
+    tempMap.set('gs2', 'g#2');
+    tempMap.set('as2', 'a#2');
+    tempMap.set('cs3', 'c#3');
+    tempMap.set('ds3', 'd#3');
+    tempMap.set('fs3', 'f#3');
+    tempMap.set('gs3', 'g#3');
+    tempMap.set('as3', 'a#3');
+    tempMap.set('cs4', 'c#4');
+    tempMap.set('ds4', 'd#4');
+    tempMap.set('fs4', 'f#4');
+    tempMap.set('gs4', 'g#4');
+    tempMap.set('as4', 'a#4');
+    tempMap.set('cs5', 'c#5');
+    tempMap.set('ds5', 'd#5');
+    tempMap.set('fs5', 'f#5');
+    tempMap.set('gs5', 'g#5');
+    tempMap.set('as5', 'a#5');
+    tempMap.set('cs6', 'c#6');
+    tempMap.set('ds6', 'd#6');
+    tempMap.set('fs6', 'f#6');
+    tempMap.set('gs6', 'g#6');
+    tempMap.set('as6', 'a#6');
+    tempMap.set('cs7', 'c#7');
+    tempMap.set('ds7', 'd#7');
+    tempMap.set('fs7', 'f#7');
+    tempMap.set('gs7', 'g#7');
+    tempMap.set('as7', 'a#7');
     let sheet = document.getElementById('sheet');
     document.body.addEventListener('keydown', function (e) {
         if (synth != null) {
@@ -223,8 +253,13 @@
                     console.log(button.dataset.value);
                     button.style = 'filter:invert(1)';
                     // synth.triggerAttack(button.dataset.value);
-                    synth.triggerAttackRelease(button.dataset.value, '1n');
-                    synth.triggerAttack(button.dataset.value);
+                    // synth.triggerAttackRelease(button.dataset.value, '1n');
+                    if ((button.dataset.value).includes('s') == true) {
+                        synth.triggerAttack(tempMap.get(button.dataset.value));
+                    } else {
+
+                        synth.triggerAttack(button.dataset.value);
+                    }
                     let key = document.createElement('div');
                     key.className = 'key';
                     key.innerHTML = e.key;
@@ -235,10 +270,7 @@
                 } catch (e) {
                     console.log(e);
                 }
-            } else {
-
-            }
-
+            } 
         } else {
             // synth = new Tone.PolySynth(
             //     {
