@@ -222,6 +222,8 @@
                     let button = document.getElementById(`button-${map.get(e.key)}`);
                     console.log(button.dataset.value);
                     button.style = 'filter:invert(1)';
+                    // synth.triggerAttack(button.dataset.value);
+                    synth.triggerAttackRelease(button.dataset.value, '2n');
                     synth.triggerAttack(button.dataset.value);
                     let key = document.createElement('div');
                     key.className = 'key';
@@ -233,6 +235,8 @@
                 } catch (e) {
                     console.log(e);
                 }
+            } else {
+
             }
 
         } else {
