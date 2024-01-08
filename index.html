@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>piano</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            border-collapse: collapse;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            font-size: small;
+        }
+
+
+
+        #white-button-group {
+            width: 100%;
+            height: 100px;
+            position: absolute;
+            bottom: 0;
+        }
+
+        #black-button-group {
+            width: auto;
+            height: 100px;
+            position: absolute;
+            bottom: 25px;
+            left: 7.5px;
+            display: inline-block;
+        }
+
+        .white.button {
+            width: 30px;
+            height: 100px;
+            display: inline-block;
+            text-align: center;
+            line-height: 150px;
+            background-color: whitesmoke;
+            border-bottom: 1px solid darkgray;
+            border-right: 1px solid darkgray;
+        }
+
+        .black.button {
+            width: 15px;
+            height: 50px;
+            display: inline-block;
+            text-align: center;
+            line-height: 50px;
+            margin-left: 15px;
+            background-color: darkgray;
+            border-bottom: 1px solid black;
+            border-right: 1px solid black;
+        }
+
+        .empty.button {
+            width: 30px;
+            height: 50px;
+            display: inline-block;
+            text-align: center;
+            line-height: 50px;
+            background-color: none;
+            border-bottom: 1px solid none;
+            border-right: 1px solid none;
+        }
+
+        #piano {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="piano">
+        <div id="white-button-group">
+        </div>
+        <div id="black-button-group">
+        </div>
+    </div>
+</body>
+<script>
+    let idx = 0;
+    let list = [
+        '1', '!',
+        '2', '@',
+        '3',
+        '4', '$',
+        '5', '%',
+        '6', '^',
+        '7',
+        '8', '*',
+        '9', '(',
+        '0',
+        'q', 'Q',
+        'w', 'W',
+        'e', 'E',
+        'r',
+        't', 'T',
+        'y', 'Y',
+        'u',
+        'i', 'I',
+        'o', 'O',
+        'p', 'P',
+        'a',
+        's', 'S',
+        'd', 'D',
+        'f',
+        'g', 'G',
+        'h', 'H',
+        'j', 'J',
+        'k',
+        'l', 'L',
+        'z', 'Z',
+        'x',
+        'c', 'C',
+        'v', 'V',
+        'b', 'B',
+        'n',
+        'm', 'M'
+    ];
+    function init() {
+        function createWhiteButton(ch) {
+            let piano = document.getElementById('white-button-group');
+            let button = document.createElement('div');
+            button.className = 'white button';
+            button.innerHTML = ch;
+            piano.appendChild(button);
+        };
+        function createEmptyBlackButton() {
+            let piano = document.getElementById('black-button-group');
+            let button = document.createElement('div');
+            button.className = 'empty button';
+            button.innerHTML = ' ';
+            piano.appendChild(button);
+        }
+        function createBlackButton(ch) {
+            let piano = document.getElementById('black-button-group');
+            let button = document.createElement('div');
+            button.className = 'black button';
+            button.innerHTML = ch;
+            piano.appendChild(button);
+        };
+        for (let i = 0; i < 36; i++) {
+            createWhiteButton(list[idx++]);
+            if (i % 7 == 2 || i % 7 == 6) {
+                createEmptyBlackButton();
+            } else {
+                createBlackButton(list[idx++]);
+            }
+        }
+    };
+    init();
+</script>
+
+</html>
