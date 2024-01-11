@@ -88,7 +88,28 @@
 
         #piano {
             width: 100%;
-            height: 100%;
+            height: 50%;
+            position: absolute;
+
+        }
+
+        #sheet {
+            width: 85%;
+            height: 50%;
+            position: absolute;
+            top: 0;
+            left: 0;
+
+        }
+
+        #root {
+            width: 80%;
+            height: 80%;
+            position: relative;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js">
@@ -97,15 +118,18 @@
 </head>
 
 <body>
-    <div id="sheet">
+    <div id="root">
+        <div id="sheet">
 
-    </div>
-    <div id="piano">
-        <div id="white-button-group">
         </div>
-        <div id="black-button-group">
+        <div id="piano">
+            <div id="white-button-group">
+            </div>
+            <div id="black-button-group">
+            </div>
         </div>
     </div>
+
 </body>
 <script>
     let idx = 0;
@@ -145,7 +169,8 @@
         'v', 'V',
         'b', 'B',
         'n',
-        'm', 'M'
+        'm',
+        'M'
     ];
     let map = new Map();
     for (let i = 0; i < list.length; i++) {
@@ -186,12 +211,16 @@
             piano.appendChild(button);
         };
         for (let i = 0; i < 36; i++) {
+            if (i == 35) {
+                break;
+            }
             createWhiteButton(idx++);
             if (i % 7 == 2 || i % 7 == 6) {
                 createEmptyBlackButton();
             } else {
                 createBlackButton(idx++);
             }
+
         }
     };
     init();
@@ -228,6 +257,13 @@
     tempMap.set('as7', 'a#7');
     let sheet = document.getElementById('sheet');
     document.body.addEventListener('keydown', function (e) {
+        if (e.key == ' ') {
+            let key = document.createElement('div');
+            key.className = 'key';
+            key.innerHTML = '&nbsp;';
+            sheet.appendChild(key);
+            return;
+        }
         if (synth != null) {
             if (!e.repeat) {
                 try {
@@ -347,12 +383,12 @@
         }
 
     })
-    setInterval(function () {
-        let key = document.createElement('div');
-        key.className = 'key';
-        key.innerHTML = '&nbsp;';
-        sheet.appendChild(key);
-    }, 250);
+    // setInterval(function () {
+    //     let key = document.createElement('div');
+    //     key.className = 'key';
+    //     key.innerHTML = '&nbsp;';
+    //     sheet.appendChild(key);
+    // }, 250);
 </script>
 
 </html>
