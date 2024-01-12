@@ -96,9 +96,9 @@
 
         #sheet {
             width: 85%;
-            height: 30%;
+            height: 70%;
             position: absolute;
-            top: 0;
+            top: -45%;
             left: 0;
             overflow-y: auto;
 
@@ -109,7 +109,7 @@
             height: 80%;
             position: relative;
             left: 50%;
-            top: 50%;
+            top: 80%;
             transform: translate(-50%, -50%);
 
         }
@@ -134,6 +134,11 @@
 
 </body>
 <script>
+    function scrollToBottom() {
+        var scrollView = document.getElementById("sheet");
+        scrollView.scrollTop = scrollView.scrollHeight;
+    }
+
     let idx = 0;
     let list = [
         '1', '!',
@@ -283,6 +288,7 @@
                     key.className = 'key';
                     key.innerHTML = e.key;
                     sheet.appendChild(key);
+                    scrollToBottom();
                 } catch (e) {
                     console.log(e);
                 }
@@ -400,12 +406,13 @@
         }
 
     })
-    // setInterval(function () {
-    //     let key = document.createElement('div');
-    //     key.className = 'key';
-    //     key.innerHTML = '&nbsp;';
-    //     sheet.appendChild(key);
-    // }, 250);
+    setInterval(function () {
+        let key = document.createElement('div');
+        key.className = 'key';
+        key.innerHTML = '&nbsp;';
+        sheet.appendChild(key);
+        scrollToBottom();
+    }, 250);
 </script>
 
 </html>
