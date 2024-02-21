@@ -280,9 +280,9 @@
                     // synth.triggerAttack(button.dataset.value);
                     // synth.triggerAttackRelease(button.dataset.value, '1n');
                     if ((button.dataset.value).includes('s') == true) {
-                        synth.triggerAttack(tempMap.get(button.dataset.value));
+                        synth.triggerAttackRelease(tempMap.get(button.dataset.value), '1n');
                     } else {
-                        synth.triggerAttack(button.dataset.value);
+                        synth.triggerAttackRelease(button.dataset.value, '1n');
                     }
                     let key = document.createElement('div');
                     key.className = 'key';
@@ -394,13 +394,13 @@
         try {
             let button = document.getElementById(`button-${map.get(e.key)}`);
             button.style = 'filter:invert(0)';
-            setTimeout(function () {
+            // setTimeout(function () {
             if ((button.dataset.value).includes('s') == true) {
                 synth.triggerRelease(tempMap.get(button.dataset.value));
             } else {
                 synth.triggerRelease(button.dataset.value);
             }
-            }, 1000)
+            // }, 1000)
         } catch (e) {
             console.log(e);
         }
