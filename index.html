@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.1.5/Tone.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tonejs/midi@2.0.28/build/Midi.min.js"></script>
+    <style>
+        /* @import url('https://fonts.googleapis.com/css2?family=Poor+Story&display=swap'); */
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            color: white;
+        }
+
+        body {
+            font-family: 'consolas';
+            font-weight: 400;
+            font-style: normal;
+            position: relative;
+        }
+
+        #root {
+            border: 1px solid white;
+            width: 400px;
+            height: 800px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+
+        }
+
+        #keyboard {
+            width: 400px;
+            height: 120px;
+            border-top: 1px solid white;
+            position: absolute;
+            bottom: 0;
+        }
+
+        #line-group {
+            width: 400px;
+            height: 650px;
+            position: absolute;
+            top: 0;
+            display: flex;
+        }
+
+        .line {
+            width: calc(100%/10);
+            box-sizing: border-box;
+            position: relative;
+            text-align: center;
+        }
+
+        .key-group {
+            width: 100%;
+            position: relative;
+            display: flex;
+            height: 30px;
+            line-height: 30px;
+        }
+
+        @keyframes down {
+            0% {
+                top: 0%;
+                visibility: visible;
+            }
+
+            100% {
+                top: 100%;
+                visibility: hidden;
+            }
+        }
+
+        .note {
+            position: absolute;
+            top: 0%;
+            visibility: hidden;
+            width: 100%;
+            height: 30px;
+            /* background-color: white; */
+            color: white;
+            line-height: 30px;
+            text-align: center;
+            animation: down 4s linear none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root">
+        <div id="line-group">
+            <div id="line-1" class="line"></div>
+            <div id="line-2" class="line"></div>
+            <div id="line-3" class="line"></div>
+            <div id="line-4" class="line"></div>
+            <div id="line-5" class="line"></div>
+            <div id="line-6" class="line"></div>
+            <div id="line-7" class="line"></div>
+            <div id="line-8" class="line"></div>
+            <div id="line-9" class="line"></div>
+            <div id="line-10" class="line"></div>
+        </div>
+        <div id="keyboard">
+            <div class="key-group">
+                <div class="line" id="key-1">1</div>
+                <div class="line" id="key-2">2</div>
+                <div class="line" id="key-3">3</div>
+                <div class="line" id="key-4">4</div>
+                <div class="line" id="key-5">5</div>
+                <div class="line" id="key-6">6</div>
+                <div class="line" id="key-7">7</div>
+                <div class="line" id="key-8">8</div>
+                <div class="line" id="key-9">9</div>
+                <div class="line" id="key-0">0</div>
+            </div>
+            <div class="key-group">
+                <div class="line" id="key-q">q</div>
+                <div class="line" id="key-w">w</div>
+                <div class="line" id="key-e">e</div>
+                <div class="line" id="key-r">r</div>
+                <div class="line" id="key-t">t</div>
+                <div class="line" id="key-y">y</div>
+                <div class="line" id="key-u">u</div>
+                <div class="line" id="key-i">i</div>
+                <div class="line" id="key-o">o</div>
+                <div class="line" id="key-p">p</div>
+            </div>
+            <div class="key-group">
+                <div class="line" id="key-a">a</div>
+                <div class="line" id="key-s">s</div>
+                <div class="line" id="key-d">d</div>
+                <div class="line" id="key-f">f</div>
+                <div class="line" id="key-g">g</div>
+                <div class="line" id="key-h">h</div>
+                <div class="line" id="key-j">j</div>
+                <div class="line" id="key-k">k</div>
+                <div class="line" id="key-l">l</div>
+                <div class="line"></div>
+            </div>
+            <div class="key-group">
+                <div class="line" id="key-z">z</div>
+                <div class="line" id="key-x">x</div>
+                <div class="line" id="key-c">c</div>
+                <div class="line" id="key-v">v</div>
+                <div class="line" id="key-b">b</div>
+                <div class="line" id="key-n">n</div>
+                <div class="line" id="key-m">m</div>
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+            </div>
+        </div>
+    </div>
+    <input type="file" id="midi-file-input" />
+    <script>
+        // let lineState = {
+        //     'line-1': false,
+        //     'line-2': false,
+        //     'line-3': false,
+        //     'line-4': false,
+        //     'line-5': false,
+        //     'line-6': false,
+        //     'line-7': false,
+        //     'line-8': false,
+        //     'line-9': false,
+        //     'line-10': false,
+        // }
+        // const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+        let line1KeyGroup = ['1', 'q', 'a', 'z'];
+        let line2KeyGroup = ['2', 'w', 's', 'x'];
+        let line3KeyGroup = ['3', 'e', 'd', 'c'];
+        let line4KeyGroup = ['4', 'r', 'f', 'v'];
+        let line5KeyGroup = ['5', 't', 'g', 'b'];
+        let line6KeyGroup = ['6', 'y', 'h', 'n'];
+        let line7KeyGroup = ['7', 'u', 'j', 'm'];
+        let line8KeyGroup = ['8', 'i', 'k'];
+        let line9KeyGroup = ['9', 'o', 'l'];
+        let line10KeyGroup = ['0', 'p'];
+        let listKeyGroups = [line1KeyGroup, line2KeyGroup, line3KeyGroup, line4KeyGroup, line5KeyGroup, line6KeyGroup, line7KeyGroup, line8KeyGroup, line9KeyGroup, line10KeyGroup]
+        document.body.addEventListener('keydown', function (e) {
+            if (!e.repeat) {
+                for (let i = 0; i < listKeyGroups.length; i++) {
+                    if (listKeyGroups[i].includes(e.key)) {
+                        console.log(listKeyGroups[i].includes(e.key));
+                        console.log(`line-${i + 1}`);
+                        let line = document.getElementById(`line-${i + 1}`);
+                        line.style = 'background: linear-gradient(to top, rgba(0,255,0,0.15) 0%, rgba(0,255,0,0) 25%)';
+                        let key = document.getElementById(`key-${e.key}`);
+                        key.style = 'background-color:rgba(255,255,255,0.65);color:white;';
+                        if (keyMap[e.key]) {
+                            sampler.triggerAttackRelease(keyMap[e.key], '8n');
+                        }
+                    }
+                }
+            }
+        });
+
+        document.body.addEventListener('keyup', function (e) {
+            if (!e.repeat) {
+                for (let i = 0; i < listKeyGroups.length; i++) {
+                    if (listKeyGroups[i].includes(e.key)) {
+                        console.log(listKeyGroups[i].includes(e.key));
+                        console.log(`line-${i + 1}`);
+                        let line = document.getElementById(`line-${i + 1}`);
+                        line.style = 'background: black;';
+                        let key = document.getElementById(`key-${e.key}`);
+                        key.style = 'background-color:rgba(255,255,255,0);color:white;';
+                        break;
+                    }
+                }
+            }
+        });
+
+        const sampler = new Tone.Sampler({
+            urls: {
+                "A0": "./sound/1.mp3",
+                "A#0": "./sound/2.mp3",
+                "B0": "./sound/3.mp3",
+                "C1": "./sound/4.mp3",
+                "C#1": "./sound/5.mp3",
+                "D1": "./sound/6.mp3",
+                "D#1": "./sound/7.mp3",
+                "E1": "./sound/8.mp3",
+                "F1": "./sound/9.mp3",
+                "F#1": "./sound/10.mp3",
+                "G1": "./sound/11.mp3",
+                "G#1": "./sound/12.mp3",
+                "A1": "./sound/13.mp3",
+                "A#1": "./sound/14.mp3",
+                "B1": "./sound/15.mp3",
+                "C2": "./sound/16.mp3",
+                "C#2": "./sound/17.mp3",
+                "D2": "./sound/18.mp3",
+                "D#2": "./sound/19.mp3",
+                "E2": "./sound/20.mp3",
+                "F2": "./sound/21.mp3",
+                "F#2": "./sound/22.mp3",
+                "G2": "./sound/23.mp3",
+                "G#2": "./sound/24.mp3",
+                "A2": "./sound/25.mp3",
+                "A#2": "./sound/26.mp3",
+                "B2": "./sound/27.mp3",
+                "C3": "./sound/28.mp3",
+                "C#3": "./sound/29.mp3",
+                "D3": "./sound/30.mp3",
+                "D#3": "./sound/31.mp3",
+                "E3": "./sound/32.mp3",
+                "F3": "./sound/33.mp3",
+                "F#3": "./sound/34.mp3",
+                "G3": "./sound/35.mp3",
+                "G#3": "./sound/36.mp3",
+                "A3": "./sound/37.mp3",
+                "A#3": "./sound/38.mp3",
+                "B3": "./sound/39.mp3",
+                "C4": "./sound/40.mp3",
+                "C#4": "./sound/41.mp3",
+                "D4": "./sound/42.mp3",
+                "D#4": "./sound/43.mp3",
+                "E4": "./sound/44.mp3",
+                "F4": "./sound/45.mp3",
+                "F#4": "./sound/46.mp3",
+                "G4": "./sound/47.mp3",
+                "G#4": "./sound/48.mp3",
+                "A4": "./sound/49.mp3",
+                "A#4": "./sound/50.mp3",
+                "B4": "./sound/51.mp3",
+                "C5": "./sound/52.mp3",
+                "C#5": "./sound/53.mp3",
+                "D5": "./sound/54.mp3",
+                "D#5": "./sound/55.mp3",
+                "E5": "./sound/56.mp3",
+                "F5": "./sound/57.mp3",
+                "F#5": "./sound/58.mp3",
+                "G5": "./sound/59.mp3",
+                "G#5": "./sound/60.mp3",
+                "A5": "./sound/61.mp3",
+                "A#5": "./sound/62.mp3",
+                "B5": "./sound/63.mp3",
+                "C6": "./sound/64.mp3",
+                "C#6": "./sound/65.mp3",
+                "D6": "./sound/66.mp3",
+                "D#6": "./sound/67.mp3",
+                "E6": "./sound/68.mp3",
+                "F6": "./sound/69.mp3",
+                "F#6": "./sound/70.mp3",
+                "G6": "./sound/71.mp3",
+                "G#6": "./sound/72.mp3",
+                "A6": "./sound/73.mp3",
+                "A#6": "./sound/74.mp3",
+                "B6": "./sound/75.mp3",
+                "C7": "./sound/76.mp3",
+                "C#7": "./sound/77.mp3",
+                "D7": "./sound/78.mp3",
+                "D#7": "./sound/79.mp3",
+                "E7": "./sound/80.mp3",
+                "F7": "./sound/81.mp3",
+                "F#7": "./sound/82.mp3",
+                "G7": "./sound/83.mp3",
+                "G#7": "./sound/84.mp3",
+                "A7": "./sound/85.mp3",
+                "A#7": "./sound/86.mp3",
+                "B7": "./sound/87.mp3",
+                "C8": "./sound/88.mp3",
+            },// envelope: {
+            //     attack: 0.1,    // 소리가 빠르게 시작
+            //     decay: 0.3,     // 일정 시간 동안 감소
+            //     sustain: 1,     // 지속 시간 최대
+            //     release: 3      // 키를 떼면 3초 동안 소리가 서서히 사라짐
+            // },
+            onload: () => {
+                console.log("All samples loaded");
+            }
+        }).toDestination();
+
+        // 키 매핑
+        const keyMap = {
+            "1": "C2", "!": "C#2", "2": "D2", "@": "D#2", "3": "E2",
+            "4": "F2", "$": "F#2", "5": "G2", "%": "G#2", "6": "A2",
+            "^": "A#2", "7": "B2", "8": "C3", "*": "C#3", "9": "D3",
+            "(": "D#3", "0": "E3", "q": "F3", "Q": "F#3", "w": "G3",
+            "W": "G#3", "e": "A3", "E": "A#3", "r": "B3", "t": "C4",
+            "T": "C#4", "y": "D4", "Y": "D#4", "u": "E4", "i": "F4",
+            "I": "F#4", "o": "G4", "O": "G#4", "p": "A4", "P": "A#4",
+            "a": "B4", "s": "C5", "S": "C#5", "d": "D5", "D": "D#5",
+            "f": "E5", "g": "F5", "G": "F#5", "h": "G5", "H": "G#5",
+            "j": "A5", "J": "A#5", "k": "B5", "l": "C6", "L": "C#6",
+            "z": "D6", "Z": "D#6", "x": "E6", "c": "F6", "C": "F#6",
+            "v": "G6", "V": "G#6", "b": "A6", "B": "A#6", "n": "B6",
+            "m": "C7", "M": "C#7"
+        };
+        const reverseKeyMap = {};
+        for (const key in keyMap) {
+            const note = keyMap[key];
+            reverseKeyMap[note] = key;
+        }
+        function createNote(noteData) {
+            console.log(noteData);
+            if (noteData == null) {
+                return;
+            }
+            setTimeout(function () {
+                let line = document.getElementById(`line-${noteData.line}`);
+                console.log(line);
+                let note = document.createElement('div');
+                note.className = 'note';
+                note.innerHTML = noteData.key;
+                line.appendChild(note);
+                // setTimeout(function())
+                setTimeout(function () {
+                    sampler.triggerAttackRelease(keyMap[noteData.key], '8n');
+                }, 4000)
+            }, noteData.time);
+        }
+
+
+
+    </script>
+    <script>
+        function findLineGroupRow(key) {
+            for (let i = 0; i < listKeyGroups.length; i++) {
+                if (listKeyGroups[i].includes(key)) {
+                    return i + 1; // +1 to make it line1~line10 instead of 0~9
+                }
+            }
+            return -1; // not found
+        }
+        const loadAndPlayMidi = async (file) => {
+            const reader = new FileReader();
+
+            reader.onload = async (event) => {
+                const arrayBuffer = event.target.result;
+                const midi = new Midi(arrayBuffer); // MIDI 파일 파싱
+
+
+                // MIDI 트랙의 각 음표를 Tone.js로 재생
+                midi.tracks.forEach(track => {
+                    track.notes.forEach(note => {
+                        // 각 음표에 대해 Tone.js로 재생 예약
+                        // synth.triggerAttackRelease(note.name, note.duration, note.time);
+                        // createNote({ });
+                        console.log(findLineGroupRow(reverseKeyMap[note.name]), reverseKeyMap[note.name], note.name, note.time * 1000)
+                        createNote({
+                            line: `${findLineGroupRow(reverseKeyMap[note.name])}`,
+                            key: reverseKeyMap[note.name],
+                            time: note.time * 1000
+                        });
+
+                    });
+                });
+            };
+
+            // 파일 읽기
+            reader.readAsArrayBuffer(file);
+        };
+
+        // 파일 입력 처리
+        document.querySelector('#midi-file-input').addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                loadAndPlayMidi(file); // MIDI 파일 재생
+            }
+        });
+    </script>
+</body>
+
+</html>
