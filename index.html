@@ -358,11 +358,13 @@
                 note.className = 'note';
                 note.innerHTML = noteData.key;
                 line.appendChild(note);
-                // setTimeout(function())
                 setTimeout(function () {
-                    sampler.triggerAttackRelease(keyMap[noteData.key], '8n');
+                    sampler.triggerAttack(keyMap[noteData.key]);
                 }, 4000)
-            }, noteData.time);
+                setTimeout(function () {
+                    sampler.triggerAttackRelease(keyMap[noteData.key]);
+                }, 4000 + noteData.duration);
+            }, noteData.time)
         }
 
 
@@ -395,7 +397,8 @@
                         createNote({
                             line: `${findLineGroupRow(reverseKeyMap[note.name])}`,
                             key: reverseKeyMap[note.name],
-                            time: note.time * 1000
+                            time: note.time * 1000,
+                            duration: note.duration
                         });
 
                     });
